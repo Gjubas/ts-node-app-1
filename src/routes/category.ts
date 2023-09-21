@@ -42,6 +42,7 @@ category.get("/", (req: Request, res: Response) => {
   );
 });
 
+//get category by id
 category.get(
   "/:id",
   validateIdObl,
@@ -52,7 +53,6 @@ category.get(
     const matchingOnes = categoryList.filter((value) => value.id === id);
 
     if (matchingOnes.length === 1) {
-      // search by primary key: should find just 1
       successHandler(
         req,
         res,
@@ -71,21 +71,26 @@ category.post(
   validateDescription,
   [validate],
   (req: Request, res: Response) => {
-    const newCategory: Category = {
-      id: categoryList.length + 2001, // Generate a new unique ID for the category
-      name: req.body.name,
-      description: req.body.description,
-    };
+    try {
+      const newCategory: Category = {
+        id: categoryList.length + 2001,
+        name: req.body.name,
+        description: req.body.description,
+      };
 
-    console.log("New Category:", newCategory);
-    categoryList.push(newCategory);
+      console.log("New Category:", newCategory);
+      categoryList.push(newCategory);
 
-    successHandler(
-      req,
-      res,
-      newCategory,
-      `Successfully created a new category with ID: ${newCategory.id}`
-    );
+      successHandler(
+        req,
+        res,
+        newCategory,
+        `Successfully created a new category with ID: ${newCategory.id}`
+      );
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      requestErrorHandler(req, res, errorMessage);
+    }
   }
 );
 
@@ -95,22 +100,28 @@ category.put(
   validateNameObl,
   [validate],
   (req: Request, res: Response) => {
-    const id: number = Number(req.params.id);
+    try {
+      const id: number = Number(req.params.id);
 
-    // Update the building with the provided ID using req.body data
-    const category = categoryList.find(
-      (category) => category.id === id
-    );
-    category!.name = req.body.name;
-    category!.description = req.body.description;
+      const category = categoryList.find((category) => category.id === id);
 
-    // You can add more check logic, but here's an example of success case
-    successHandler(
-      req,
-      res,
-      category,
-      `Successfully updated building with id: ${id}`
-    );
+      if (!category) {
+        throw new Error(`Category with id ${id} not found.`);
+      }
+
+      category.name = req.body.name;
+      category.description = req.body.description;
+
+      successHandler(
+        req,
+        res,
+        category,
+        `Successfully updated category with id: ${id}`
+      );
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      requestErrorHandler(req, res, errorMessage);
+    }
   }
 );
 

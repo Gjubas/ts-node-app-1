@@ -48,8 +48,8 @@ export const validateIdObl = [
 
 export const validateNameObl = [
   check('name')
-    .isLength({ min: 2, max: 10 })
-    .withMessage('Must be between 2-10 characters long')
+    .isLength({ min: 1, max: 42 })
+    .withMessage('Must be between 1-42 characters long')
     .bail()
     .matches(/^[A-Za-zäöåÄÖÅ0-9\s-]*$/)
     .withMessage('Must contain only letters, numbers and -')
@@ -61,8 +61,8 @@ export const validateNameObl = [
 
 export const validateDescription = [
   check('description')
-    .isLength({ min: 2, max: 255 })
-    .withMessage('Must be between 2-255 characters long')
+    .isLength({ min: 1, max: 255 })
+    .withMessage('Must be between 1-255 characters long')
     .bail()
     .matches(/^[A-Za-zäöåÄÖÅ0-9\s-]*$/)
     .withMessage('Must contain only letters, numbers and -')
