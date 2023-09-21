@@ -88,21 +88,28 @@ category.post(
     );
   }
 );
+
 category.put(
-  // UPDATE existing category in DB
-  "/",
+  "/:id",
   validateIdObl,
   validateNameObl,
   [validate],
   (req: Request, res: Response) => {
-    const id: number = Number(req.body.id);
+    const id: number = Number(req.params.id);
 
-    // You can add more check logic, but here just example of success case
+    // Update the building with the provided ID using req.body data
+    const category = categoryList.find(
+      (category) => category.id === id
+    );
+    category!.name = req.body.name;
+    category!.description = req.body.description;
+
+    // You can add more check logic, but here's an example of success case
     successHandler(
       req,
       res,
-      1, // Number of affected rows = updated rows
-      `Successfully updated category with id: ${id}`
+      category,
+      `Successfully updated building with id: ${id}`
     );
   }
 );
